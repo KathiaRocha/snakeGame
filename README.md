@@ -10,4 +10,5 @@ O programa desenha os elementos do jogo diretamente no console, conforme o estad
 - Interceptação e validação de entradas do usuário;
 - Controle mais elaborado de laço de repetição, para otimização de tempo de execução.
 
-[image](https://user-images.githubusercontent.com/112030384/197072055-ab513deb-0b43-4387-927d-7d305c2d600f.png)
+
+![jogo_cobrinha20 10](https://user-images.githubusercontent.com/112030384/197074321-b960e089-37b6-404e-8b98-cf592b53c482.png)
