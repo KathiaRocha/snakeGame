@@ -7,29 +7,31 @@
 #include<math.h>
 
 int quantLinhasTab = 20;
-int quantColunasTab = 30;
-char tabuleiro[20][30];
-int cobra[8][2];
-int controlePosiCabeca[2];
+int quantColunasTab = 60;
+char tabuleiro[20][60];
+int novaPosicaoCabeca[2];
 int colunaFruta = 3;
 int linhaFruta = 2;
-int x,y,i,pontos,tamCobra = 3;
+int x,y,pontos,tamCobra;
+int cobra[15][2];
 char tCIMA = 119;
 char tBAIXO = 115;
 char tDIREITA = 100;
 char tESQUERDA = 97;
 char tecla;
+int estaJogoFinalizado = 0; 
 
 inicializarCobra(){
 	
+	tamCobra = 3;
+	
+	cobra[0][1] = 7;
 	cobra[0][0] = 6;
+	cobra[1][1] = 7;
 	cobra[1][0] = 5;
-	cobra[1][1] = 6;
+	cobra[2][1] = 7;
 	cobra[2][0] = 4;
-	cobra[2][1] = 6;
-	cobra[0][1] = 6;
- 	controlePosiCabeca[0] = cobra[0][0];
- 	controlePosiCabeca[1] = cobra[0][1];
+	
 }
 
 gerarNovaFruta(){
@@ -55,60 +57,72 @@ capturarTecla(){
 
 moverCobra(){
 	
-	i = tamCobra;
-
+	//para impedir que a cobra movimente antes de uma tecla ser acionada.
+	if(tecla==0){
+		return 1;
+	}
+	
 	//comando w no teclado
 	if(tecla == tCIMA){
 		if(cobra[0][1] > 1){
-			controlePosiCabeca[1] = cobra[0][1] - 1;
+			novaPosicaoCabeca[1] = cobra[0][1] - 1;
 		}
 		else{
-			controlePosiCabeca[1] = quantLinhasTab - 2;
+			novaPosicaoCabeca[1] = quantLinhasTab - 2;
 		}
-		controlePosiCabeca[0] = cobra[0][0];	
+		novaPosicaoCabeca[0] = cobra[0][0];	
 	}
 	
 	//comando s no teclado
-	if(tecla == tBAIXO){
+	else if(tecla == tBAIXO){
 		if(cobra[0][1] < quantLinhasTab - 2){
-			controlePosiCabeca[1] = cobra[0][1] + 1;
+			novaPosicaoCabeca[1] = cobra[0][1] + 1;
 		}
 		else{
-			controlePosiCabeca[1] = 1;
+			novaPosicaoCabeca[1] = 1;
 		}
-		controlePosiCabeca[0] = cobra[0][0];
+		novaPosicaoCabeca[0] = cobra[0][0];
 	}
 	
 	//comando a no teclado
-	if(tecla == tESQUERDA){
+	else if(tecla == tESQUERDA){
 		if(cobra[0][0] > 1){
-			controlePosiCabeca[0] = cobra[0][0] - 1;
+			novaPosicaoCabeca[0] = cobra[0][0] - 1;
 		}
 		else{
-			controlePosiCabeca[0] = quantColunasTab - 2;
+			novaPosicaoCabeca[0] = quantColunasTab - 2;
 		}
-		controlePosiCabeca[1] = cobra[0][1];
+		novaPosicaoCabeca[1] = cobra[0][1];
 	}
 	
 	//comando d no teclado
-	if(tecla == tDIREITA){
+	else if(tecla == tDIREITA){
 		if(cobra[0][0] < quantColunasTab - 2){
-			controlePosiCabeca[0] = cobra[0][0] + 1;
+			novaPosicaoCabeca[0] = cobra[0][0] + 1;
 		}
 		else{
-			controlePosiCabeca[0] = 1;
+			novaPosicaoCabeca[0] = 1;
 		}
-		controlePosiCabeca[1] = cobra[0][1];
+		novaPosicaoCabeca[1] = cobra[0][1];
 	}
 	
-		
-	for(i;i>1;i--){
+	//para inicar o controle de posição antes de qualquer movimento.
+	else{
+		novaPosicaoCabeca[0] = cobra[0][0];
+ 		novaPosicaoCabeca[1] = cobra[0][1];	
+ 		//return 1;
+	}
+	
+	// passa a parte posterior da cobra para parte anterior.	
+	for(int i = tamCobra; i > 1; i--){
 		cobra[i-1][0] = cobra[i-2][0];
 		cobra[i-1][1] = cobra[i-2][1];
 	}
+	//atualiza a cabeça para nova posição de acordo com o movimento realizado.
+	cobra[0][0] = novaPosicaoCabeca[0];
+	cobra[0][1] = novaPosicaoCabeca[1];
 	
-	cobra[0][0] = controlePosiCabeca[0];
-	cobra[0][1] = controlePosiCabeca[1];
+	
 }
 
 verificarSeFrutaFoiComida(){
@@ -119,7 +133,18 @@ verificarSeFrutaFoiComida(){
 	}
 }
 
+verificarColisaoCobraComCorpo(){
+	for(int i = 1; i < tamCobra; i++){
+		if(cobra[0][0] == cobra[i][0] && cobra[0][1] == cobra[i][1]){
+			estaJogoFinalizado=1;
+			break;			
+		}
+	}
+}
+
+
 gerarTabuleiro(){
+	
 	for (y = 0; y < quantLinhasTab; y++){
 		for (x = 0; x < quantColunasTab; x++){
 			if( y == 0 || y == quantLinhasTab - 1 || x == 0 || x == quantColunasTab - 1){
@@ -134,7 +159,7 @@ gerarTabuleiro(){
 		}
 	}
 	
-	for(i = 0; i < tamCobra; i++){
+	for(int i = 0; i < tamCobra; i++){
 		y = cobra[i][1];
 		x = cobra[i][0];
 		tabuleiro [y][x] = 220;
@@ -142,10 +167,18 @@ gerarTabuleiro(){
 }
 
 
-imprimirTabuleiro(){
+imprimirJogo(){
+	
 	system("cls");
 	
-	printf("Pontos: %d \n",pontos);	
+	printf("Pontos: %d ",pontos);
+	
+	if(estaJogoFinalizado != 0){
+		
+		printf("---------------------GAME OVER--------------------");		
+	}
+		
+	printf("\n");
 	
 	for (y = 0; y < quantLinhasTab; y++){
 		for (x = 0; x < quantColunasTab; x++){
@@ -158,26 +191,20 @@ imprimirTabuleiro(){
 iniciarJogo(){
 	
 	inicializarCobra();
-	
-	while (1){
+	//laço principal do jogo
+	while (estaJogoFinalizado != 1){
 		capturarTecla();
-		moverCobra();
 		verificarSeFrutaFoiComida();
+		moverCobra();
+		verificarColisaoCobraComCorpo();
 		gerarTabuleiro();
-		imprimirTabuleiro();
-		sleep(0.5);
+		imprimirJogo();
+		sleep(0.9);//TODO: criar funcionalidade para escolha da velocidade pelo jogador
 	}
 }
 
 int main(){
-	
-	
-		
+				
 	iniciarJogo();
-	
-	
-	
-	
-	
-		
+			
 }
