@@ -159,11 +159,16 @@ gerarTabuleiro(){
 		}
 	}
 	
-	for(int i = 0; i < tamCobra; i++){
+	for(int i = 1; i < tamCobra; i++){
 		y = cobra[i][1];
 		x = cobra[i][0];
-		tabuleiro [y][x] = 220;
+		tabuleiro [y][x] = 219;
 	}
+	
+	x = cobra[0][0];
+	y = cobra[0][1];
+	tabuleiro [y][x] = 178;
+	
 }
 
 
